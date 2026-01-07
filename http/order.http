@@ -1,0 +1,44 @@
+### Add order
+# @name AddOrder
+POST http://localhost:8080/v1/order
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "totalAmount": 104.95,
+  "products": [
+    {
+      "productId": 2,
+      "quantity": 1,
+      "price": 34.99
+    },
+    {
+      "productId": 4,
+      "quantity": 2,
+      "price": 34.98
+    }
+  ]
+}
+
+### Get order
+# @name GetOrder
+GET http://localhost:8080/v1/order/9
+Content-Type: application/json
+
+### Get orders
+# @name GetOrders
+GET http://localhost:8080/v1/order
+Content-Type: application/json
+
+### Get order status
+# @name GetOrderStatus
+GET http://localhost:8080/v1/order/8/status
+
+### Update order status
+# @name UpdateOrderStatus
+PUT http://localhost:8080/v1/order/8/status
+Content-Type: application/json
+
+{
+  "status": 1
+}

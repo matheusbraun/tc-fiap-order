@@ -1,0 +1,42 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories (if using vendoring)
+vendor/
+
+# Terraform files
+.terraform/
+# .terraform.lock.hcl  # Uncomment to ignore lock file (team decision)
+*.tfstate
+*.tfstate.backup
+*.tfplan
+*.tfvars
+!*.tfvars.example
+
+# IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+cmd/api/__debug*
+
+# Sealed Secrets files
+kubeseal
+*.tar.gz

@@ -1,0 +1,15 @@
+### Create Payment
+# @name CreatePayment
+POST http://localhost:8080/v1/payment
+Content-Type: application/json
+
+{
+  "type": "mercadopago",
+  "total": 104.95,
+  "orderId": 12
+}
+
+### Get Payment Status by Order ID
+# @name GetPaymentStatusByOrderId
+GET http://localhost:8080/v1/payment/12/status
+Content-Type: application/json

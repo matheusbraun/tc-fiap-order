@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: 975049982271.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-50:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "tc-fiap-staging-postgres.c90ys0mko7jv.us-east-1.rds.amazonaws.com"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_SSLMODE
+              value: "require"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
+            
+            # Variáveis do Mercado Pago
+            - name: MERCADO_PAGO_BASEURL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_BASEURL
+            - name: MERCADO_PAGO_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_ACCESS_TOKEN
+            - name: MERCADO_PAGO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_CLIENT_ID
+            - name: MERCADO_PAGO_POS_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_POS_ID
+            - name: MERCADO_PAGO_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_WEBHOOK_SECRET
+            - name: MERCADO_PAGO_WEBHOOK_CALLBACK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MERCADO_PAGO_WEBHOOK_CALLBACK_URL

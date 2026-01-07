@@ -1,0 +1,458 @@
+basePath: /
+definitions:
+  dto.AddCustomerRequestDto:
+    properties:
+      cpf:
+        example: 12345678901
+        type: integer
+      email:
+        example: john@doe.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  dto.AddOrderDto:
+    properties:
+      customerId:
+        example: 1
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/dto.AddOrderProductDto'
+        type: array
+      totalAmount:
+        example: 34.99
+        type: number
+    type: object
+  dto.AddOrderProductDto:
+    properties:
+      price:
+        example: 34.99
+        type: number
+      productId:
+        example: 1
+        type: integer
+      quantity:
+        example: 1
+        type: integer
+    type: object
+  dto.AddPaymentRequestDto:
+    properties:
+      orderId:
+        type: integer
+      total:
+        type: number
+      type:
+        type: string
+    type: object
+  dto.AddProductRequestDto:
+    properties:
+      category:
+        example: 1
+        type: integer
+      description:
+        example: Hamburguer com salada
+        type: string
+      image_link:
+        example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+        type: string
+      name:
+        example: Hamburguer
+        type: string
+      price:
+        example: 34.99
+        type: number
+    type: object
+  dto.GetCustomerResponseDto:
+    properties:
+      cpf:
+        type: integer
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.GetOrderResponseDto:
+    properties:
+      created_at:
+        type: string
+      customer:
+        $ref: '#/definitions/dto.GetCustomerResponseDto'
+      id:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/dto.OrderProductDto'
+        type: array
+      status:
+        items:
+          $ref: '#/definitions/dto.GetOrderStatusResponseDto'
+        type: array
+      total_amount:
+        type: number
+    type: object
+  dto.GetOrderStatusResponseDto:
+    properties:
+      created_at:
+        type: string
+      current_status:
+        type: integer
+      current_status_description:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+    type: object
+  dto.GetOrdersResponseDto:
+    properties:
+      orders:
+        items:
+          $ref: '#/definitions/dto.GetOrderResponseDto'
+        type: array
+    type: object
+  dto.GetProductResponseDto:
+    properties:
+      category:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_link:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dto.OrderProductDto:
+    properties:
+      category:
+        type: integer
+      description:
+        type: string
+      image_link:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  dto.UpdateOrderStatusRequestDto:
+    properties:
+      status:
+        example: 1
+        type: integer
+    type: object
+  dto.UpdateProductRequestDto:
+    properties:
+      category:
+        example: 1
+        type: integer
+      description:
+        example: Hamburguer com bacon
+        type: string
+      image_link:
+        example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+        type: string
+      name:
+        example: Hamburguer
+        type: string
+      price:
+        example: 34.99
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Api to manage a fast food restaurant
+  title: Tc-Fiap-50
+  version: "1.0"
+paths:
+  /v1/customer:
+    get:
+      consumes:
+      - application/json
+      description: Get customer by CPF
+      parameters:
+      - description: CPF
+        in: query
+        name: cpf
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetCustomerResponseDto'
+      summary: Get customer
+      tags:
+      - Customer
+    post:
+      consumes:
+      - application/json
+      description: Add customer
+      parameters:
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddCustomerRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Add customer
+      tags:
+      - Customer
+  /v1/order:
+    get:
+      consumes:
+      - application/json
+      description: Get orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetOrdersResponseDto'
+      summary: Get orders
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: Add order
+      parameters:
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddOrderDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.GetOrderResponseDto'
+      summary: Add order
+      tags:
+      - Order
+  /v1/order/{orderId}:
+    get:
+      consumes:
+      - application/json
+      description: Get order
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetOrderResponseDto'
+      summary: Get order
+      tags:
+      - Order
+  /v1/order/{orderId}/status:
+    get:
+      consumes:
+      - application/json
+      description: Get order status
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetOrderStatusResponseDto'
+      summary: Get order status
+      tags:
+      - Order
+    put:
+      consumes:
+      - application/json
+      description: Update order status
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      - description: Status
+        in: body
+        name: status
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateOrderStatusRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update order status
+      tags:
+      - Order
+  /v1/payment:
+    post:
+      consumes:
+      - application/json
+      description: Create Payment
+      parameters:
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddPaymentRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      summary: Create Payment
+      tags:
+      - Payment
+  /v1/payment/{orderId}/status:
+    get:
+      consumes:
+      - application/json
+      description: Get Payment Status by Order ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Get Payment Status by Order ID
+      tags:
+      - Payment
+  /v1/product:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Get products by category
+        Category values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa
+      parameters:
+      - description: Category
+        in: query
+        name: category
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetProductResponseDto'
+      summary: Get products by category
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Add product
+        Category values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa
+      parameters:
+      - description: Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddProductRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Add product
+      tags:
+      - Product
+  /v1/product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete product
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete product
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Update product
+        Category values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Name
+        in: body
+        name: name
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProductRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update product
+      tags:
+      - Product
+swagger: "2.0"

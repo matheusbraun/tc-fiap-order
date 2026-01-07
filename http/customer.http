@@ -1,0 +1,15 @@
+### Add Customer
+# @name AddCustomer
+POST {{baseUrl}}v1/customer
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "cpf": 12345678904,
+  "email": "john@doe.com"
+}
+
+### Get Customer
+# @name GetCustomer
+GET {{baseUrl}}v1/customer?cpf=12345678901
+Content-Type: application/json

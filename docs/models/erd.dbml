@@ -1,0 +1,77 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project fiap_db {
+  database_type: 'postgres'
+  Note: 'Database modeling for FIAP'
+}
+
+Table Customer {
+  id int [primary key, increment, not null]
+  created_at timestamp [default: 'getDate()']
+  name varchar(255) [not null]
+  cpf int [not null, unique, note: 'Indexed for fast lookups']
+  email varchar(255) [not null]
+  
+  indexes {
+    cpf [unique, name: 'idx_customer_cpf']
+  }
+}
+
+Table Product {
+  id int [primary key, increment, not null]
+  created_at timestamp [default: 'getDate()']
+  name varchar(255) [not null] 
+  category int [not null, note: '1 - Snack\n2 - Side dish\n3 - Drink\n4 - Dessert']
+  price float [not null]
+  description varchar(255)
+  image_link varchar(255)
+}
+
+Table Order {
+  id int [primary key, increment, not null]
+  created_at timestamp [default: 'getDate()']
+  total_amount float [default: 0]
+  customer_id int [null, ref: > Customer.id, note: 'Indexed for customer order lookups']
+  
+  indexes {
+    customer_id [name: 'idx_order_customer_id']
+  }
+}
+
+Table OrderProduct {
+  id int [primary key, increment, not null]
+  order_id int [not null, ref: > Order.id, note: 'Indexed for order product joins']
+  product_id int [not null, ref: > Product.id, note: 'Indexed for product order joins']
+  price float [not null]
+  quantity int [not null]
+  
+  indexes {
+    order_id [name: 'idx_order_product_order_id']
+    product_id [name: 'idx_order_product_product_id']
+  }
+}
+
+Table OrderStatus {
+  id int [primary key, increment, not null]
+  created_at timestamp [default: 'getDate()']
+  current_status int [not null, note: '1 - Recebido\n2 - Em preparação\n3 - Pronto\n4 - Finalizado'] 
+  order_id int [not null, ref: > Order.id, note: 'Indexed for order status lookups']
+  
+  indexes {
+    order_id [name: 'idx_order_status_order_id']
+  }
+}
+
+Table Payment {
+  id int [primary key, increment, not null]
+  created_at timestamp [default: 'getDate()']
+  order_id int [not null, ref: > Order.id, note: 'Indexed for payment order lookups']
+  total float [not null]
+  type varchar(255) [not null]
+  status varchar(255) [not null]
+  
+  indexes {
+    order_id [name: 'idx_payment_order_id']
+  }
+}

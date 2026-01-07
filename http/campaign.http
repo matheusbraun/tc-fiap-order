@@ -1,0 +1,16 @@
+### Add Campaign
+# @name AddCampaign
+POST {{baseUrl}}/v1/campaign
+Content-Type: application/json
+
+{
+  "name": "Cool Campaign",
+  "active": true,
+  "discount_percentage": 10,
+  "products": [1]
+}
+
+### Get Campaigns By Product
+# @name GetCampaignsByProduct
+GET {{baseUrl}}/v1/campaign/products/1,2
+Content-Type: application/json

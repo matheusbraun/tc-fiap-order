@@ -1,0 +1,55 @@
+
+### Generate QR Code
+POST {{mercado_pago_baseUrl}}/instore/orders/qr/seller/collectors/{{mercado_pago_client_id}}/pos/{{mercado_pago_pos_id}}/qrs
+Content-Type: application/json
+Authorization: Bearer {{mercado_pago_token}}
+
+{
+  "external_reference": "reference_12345",
+  "title": "Product order",
+  "description": "Purchase description.",
+  "notification_url": "https://www.yourserver.com/notifications",
+  "total_amount": 100,
+  "items": [
+    {
+      "sku_number": "A123K9191938",
+      "category": "marketplace",
+      "title": "Point Mini",
+      "description": "This is the Point Mini",
+      "unit_price": 100,
+      "quantity": 1,
+      "unit_measure": "unit",
+      "total_amount": 100
+    }
+  ]
+}
+
+### Create store
+POST {{mercado_pago_baseUrl}}/users/{{mercado_pago_client_id}}/stores
+Content-Type: application/json
+Authorization: Bearer {{mercado_pago_token}}
+
+{
+  "name": "Sucursal Instore",
+  "location": {
+    "street_number": "XX",
+    "street_name": "XXXX",
+    "city_name": "XXXX",
+    "state_name": "XXXXX",
+    "latitude": 0,
+    "longitude": 0,
+    "reference": "Near to Mercado Pago"
+  }
+}
+
+### Create POS
+POST {{mercado_pago_baseUrl}}/pos
+Content-Type: application/json
+Authorization: Bearer {{mercado_pago_token}}
+
+{
+  "name": "First POS",
+  "fixed_amount": false,
+  "store_id": 0,
+  "external_id": "XXXX"
+}

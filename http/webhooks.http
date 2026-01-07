@@ -1,0 +1,8 @@
+## Notify Payment
+# @name NotifyPayment
+POST http://localhost:8080/webhooks/payment/9/notify
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}

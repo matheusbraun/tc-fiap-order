@@ -1,0 +1,178 @@
+name: Deploy Application Pipeline
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+      skip_tests:
+        description: 'Skip tests (use with caution)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  GO_VERSION: '1.24.3'
+  KUBECTL_VERSION: 'v1.33.0'
+  AWS_REGION: us-east-1
+  EKS_CLUSTER_NAME: tc-fiap-staging
+  ECR_REGISTRY: 975049982271.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: tc-fiap-50
+
+jobs:
+  # Planning and validation
+  plan:
+    name: 'Plan Deployment'
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_app: ${{ steps.plan.outputs.deploy_app }}
+      skip_tests: ${{ steps.plan.outputs.skip_tests }}
+      environment: ${{ steps.plan.outputs.environment }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    
+    - name: Plan deployment
+      id: plan
+      run: |
+        # Simple planning logic
+        DEPLOY_APP="false"
+        SKIP_TESTS="${{ inputs.skip_tests || 'false' }}"
+        ENVIRONMENT="${{ inputs.environment || 'production' }}"
+        
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          DEPLOY_APP="true"
+        elif [[ "${{ github.event_name }}" == "push" ]]; then
+          DEPLOY_APP="true"
+        fi
+        
+        echo "deploy_app=$DEPLOY_APP" >> $GITHUB_OUTPUT
+        echo "skip_tests=$SKIP_TESTS" >> $GITHUB_OUTPUT
+        echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+
+  test:
+    name: 'Test & Build'
+    runs-on: ubuntu-latest
+    needs: plan
+    if: needs.plan.outputs.skip_tests != 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        cache: true
+    - run: go test ./...
+    - run: go build ./...
+
+  docker:
+    name: 'Build & Push Docker'
+    runs-on: ubuntu-latest
+    needs: [plan, test]
+    if: |
+      always() && 
+      needs.plan.outputs.deploy_app == 'true' && 
+      github.event_name != 'pull_request' &&
+      (needs.test.result == 'success' || needs.plan.outputs.skip_tests == 'true')
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: docker/setup-buildx-action@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION }}
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable=true
+    - uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  application:
+    name: 'Deploy Application'
+    runs-on: ubuntu-latest
+    needs: [plan, docker]
+    if: |
+      always() && 
+      needs.plan.outputs.deploy_app == 'true' &&
+      github.event_name != 'pull_request' &&
+      needs.docker.result == 'success'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION }}
+    - name: Deploy Application
+      run: |
+        curl -LO "https://dl.k8s.io/release/${{ env.KUBECTL_VERSION }}/bin/linux/amd64/kubectl"
+        chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+        aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
+        
+        # Create or update postgres secret
+        echo "Creating postgres secret..."
+        kubectl create secret generic postgres-secret \
+          --from-literal=POSTGRES_DB="${{ secrets.DB_NAME || 'tc_fiap_50' }}" \
+          --from-literal=POSTGRES_USER="${{ secrets.DB_USER || 'postgres' }}" \
+          --from-literal=POSTGRES_PASSWORD="${{ secrets.DB_PASSWORD || 'postgres' }}" \
+          --from-literal=POSTGRES_HOST="${{ secrets.DB_HOST || 'postgres-service' }}" \
+          --from-literal=POSTGRES_PORT="${{ secrets.DB_PORT || '5432' }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+        
+        echo "✅ Postgres secret created/updated successfully"
+
+        # Create app secret
+        kubectl create secret generic app-secret \
+          --from-literal=MERCADO_PAGO_BASEURL="https://api.mercadopago.com" \
+          --from-literal=MERCADO_PAGO_ACCESS_TOKEN="${{ secrets.MERCADO_PAGO_ACCESS_TOKEN }}" \
+          --from-literal=MERCADO_PAGO_CLIENT_ID="${{ secrets.MERCADO_PAGO_CLIENT_ID }}" \
+          --from-literal=MERCADO_PAGO_POS_ID="${{ secrets.MERCADO_PAGO_POS_ID }}" \
+          --from-literal=MERCADO_PAGO_WEBHOOK_SECRET="${{ secrets.MERCADO_PAGO_WEBHOOK_SECRET }}" \
+          --from-literal=MERCADO_PAGO_WEBHOOK_CALLBACK_URL="${{ secrets.MERCADO_PAGO_WEBHOOK_CALLBACK_URL }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+        
+        # Deploy with new image
+        IMAGE_TAG=$(echo "${{ needs.docker.outputs.image_tag }}" | tr ',' '\n' | head -n1 | xargs)
+        echo "Using image: $IMAGE_TAG"
+        sed "s|975049982271.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-50:latest|$IMAGE_TAG|g" k8s/app-deployment.yaml > /tmp/app-final.yaml
+        
+        kubectl apply -f /tmp/app-final.yaml
+        kubectl apply -f k8s/app-service.yaml
+        kubectl apply -f k8s/app-hpa.yaml
+        
+        echo "Deployment completed. Checking status..."
+        kubectl get deployment app-deployment -o wide
+        kubectl rollout status deployment/app-deployment --timeout=300s

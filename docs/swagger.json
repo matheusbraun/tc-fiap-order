@@ -1,0 +1,681 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Api to manage a fast food restaurant",
+        "title": "Tc-Fiap-50",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/v1/customer": {
+            "get": {
+                "description": "Get customer by CPF",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CPF",
+                        "name": "cpf",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetCustomerResponseDto"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Add customer",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddCustomerRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/v1/order": {
+            "get": {
+                "description": "Get orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetOrdersResponseDto"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Add order",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddOrderDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetOrderResponseDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/order/{orderId}": {
+            "get": {
+                "description": "Get order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetOrderResponseDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/order/{orderId}/status": {
+            "get": {
+                "description": "Get order status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetOrderStatusResponseDto"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update order status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update order status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status",
+                        "name": "status",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateOrderStatusRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/v1/payment": {
+            "post": {
+                "description": "Create Payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Create Payment",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddPaymentRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/payment/{orderId}/status": {
+            "get": {
+                "description": "Get Payment Status by Order ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Get Payment Status by Order ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product": {
+            "get": {
+                "description": "Get products by category\nCategory values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get products by category",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Category",
+                        "name": "category",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetProductResponseDto"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add product\nCategory values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Add product",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddProductRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/v1/product/{id}": {
+            "put": {
+                "description": "Update product\nCategory values: 1 - Lanche, 2 - Acompanhamento, 3 - Bebida, 4 - Sobremesa",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Update product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Name",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateProductRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Delete product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.AddCustomerRequestDto": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "integer",
+                    "example": 12345678901
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
+        },
+        "dto.AddOrderDto": {
+            "type": "object",
+            "properties": {
+                "customerId": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AddOrderProductDto"
+                    }
+                },
+                "totalAmount": {
+                    "type": "number",
+                    "example": 34.99
+                }
+            }
+        },
+        "dto.AddOrderProductDto": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number",
+                    "example": 34.99
+                },
+                "productId": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "dto.AddPaymentRequestDto": {
+            "type": "object",
+            "properties": {
+                "orderId": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AddProductRequestDto": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Hamburguer com salada"
+                },
+                "image_link": {
+                    "type": "string",
+                    "example": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Hamburguer"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 34.99
+                }
+            }
+        },
+        "dto.GetCustomerResponseDto": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GetOrderResponseDto": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "customer": {
+                    "$ref": "#/definitions/dto.GetCustomerResponseDto"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.OrderProductDto"
+                    }
+                },
+                "status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GetOrderStatusResponseDto"
+                    }
+                },
+                "total_amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.GetOrderStatusResponseDto": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "current_status": {
+                    "type": "integer"
+                },
+                "current_status_description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GetOrdersResponseDto": {
+            "type": "object",
+            "properties": {
+                "orders": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GetOrderResponseDto"
+                    }
+                }
+            }
+        },
+        "dto.GetProductResponseDto": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.OrderProductDto": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "image_link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product_id": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateOrderStatusRequestDto": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "dto.UpdateProductRequestDto": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Hamburguer com bacon"
+                },
+                "image_link": {
+                    "type": "string",
+                    "example": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Hamburguer"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 34.99
+                }
+            }
+        }
+    }
+}
