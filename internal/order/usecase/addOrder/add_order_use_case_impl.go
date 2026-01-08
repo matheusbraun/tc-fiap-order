@@ -37,12 +37,6 @@ func NewAddOrderUseCaseImpl(
 }
 
 func (u *AddOrderUseCaseImpl) Execute(command *commands.AddOrderCommand) (string, error) {
-	// Extract product IDs and validate all exist
-	productIDs := make([]uint, len(command.Products))
-	for i, p := range command.Products {
-		productIDs[i] = p.ProductId
-	}
-
 	// Create order
 	orderResult, err := u.orderRepository.AddOrder(&entities.OrderEntity{
 		CustomerId:  command.CustomerId,

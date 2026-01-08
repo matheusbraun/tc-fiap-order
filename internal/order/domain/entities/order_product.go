@@ -3,7 +3,7 @@ package entities
 type OrderProductEntity struct {
 	ID        uint        `gorm:"primaryKey"`
 	OrderId   uint        `gorm:"index"`
-	ProductId uint        `gorm:"index"` // No FK constraint - references external product service
+	ProductId uint        `gorm:"index"`
 	Price     float32     `gorm:"not null"`
 	Quantity  uint        `gorm:"not null"`
 	Order     OrderEntity `gorm:"foreignKey:OrderId;references:ID"`
