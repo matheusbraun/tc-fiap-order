@@ -141,63 +141,6 @@ func (_c *MockProductClient_GetProducts_Call) RunAndReturn(run func(context.Cont
 	return _c
 }
 
-// ValidateProduct provides a mock function with given fields: ctx, productID
-func (_m *MockProductClient) ValidateProduct(ctx context.Context, productID uint) (bool, error) {
-	ret := _m.Called(ctx, productID)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ValidateProduct")
-	}
-
-	var r0 bool
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint) (bool, error)); ok {
-		return rf(ctx, productID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, uint) bool); ok {
-		r0 = rf(ctx, productID)
-	} else {
-		r0 = ret.Get(0).(bool)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
-		r1 = rf(ctx, productID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockProductClient_ValidateProduct_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ValidateProduct'
-type MockProductClient_ValidateProduct_Call struct {
-	*mock.Call
-}
-
-// ValidateProduct is a helper method to define mock.On call
-//   - ctx context.Context
-//   - productID uint
-func (_e *MockProductClient_Expecter) ValidateProduct(ctx interface{}, productID interface{}) *MockProductClient_ValidateProduct_Call {
-	return &MockProductClient_ValidateProduct_Call{Call: _e.mock.On("ValidateProduct", ctx, productID)}
-}
-
-func (_c *MockProductClient_ValidateProduct_Call) Run(run func(ctx context.Context, productID uint)) *MockProductClient_ValidateProduct_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
-	})
-	return _c
-}
-
-func (_c *MockProductClient_ValidateProduct_Call) Return(_a0 bool, _a1 error) *MockProductClient_ValidateProduct_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockProductClient_ValidateProduct_Call) RunAndReturn(run func(context.Context, uint) (bool, error)) *MockProductClient_ValidateProduct_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // NewMockProductClient creates a new instance of MockProductClient. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockProductClient(t interface {

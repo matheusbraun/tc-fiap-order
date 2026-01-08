@@ -1,70 +1,196 @@
-# Microsserviço de Pedidos
+# Tech Challenge - Order Microservice
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
 
 Um microsserviço standalone para gerenciamento de pedidos seguindo os princípios de Clean Architecture, extraído de uma aplicação monolítica.
 
-## Visão Geral
+## Índice
 
-Este microsserviço gerencia todas as operações relacionadas a pedidos, incluindo:
-- Criação de pedidos com validação de produtos
-- Recuperação de pedidos com dados enriquecidos de clientes e produtos
-- Listagem de pedidos (excluindo pedidos finalizados)
-- Rastreamento e atualização de status de pedidos
+- [Sobre](#sobre)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Configuração](#configuração)
+- [Uso](#uso)
+- [Arquivos HTTP](#arquivos-http)
+- [Testes com BDD](#testes-com-bdd)
+- [Qualidade de Código](#qualidade-de-código)
+- [Troubleshooting](#troubleshooting)
 
-## Arquitetura
+## Sobre
 
-### Camadas da Clean Architecture
+Este microserviço faz parte de uma arquitetura de microserviços para gestão de restaurantes. Ele foi desenvolvido em Golang com **PostgreSQL** como banco de dados, implementando **Clean Architecture** para separação clara entre regras de negócio e infraestrutura.
+
+### Arquitetura Clean
+
+O projeto segue os princípios da Clean Architecture, organizando o código em camadas bem definidas:
+
+- **Domain (Domínio)**: Contém as entidades e regras de negócio centrais
+- **Use Cases (Casos de Uso)**: Implementa a lógica de aplicação e orquestra as operações
+- **Controllers**: Gerenciam o fluxo de dados entre a camada de apresentação e casos de uso
+- **Infrastructure (Infraestrutura)**: Implementa detalhes técnicos como persistência PostgreSQL e APIs REST
+- **Presenters**: Formatam os dados para apresentação com enriquecimento de dados externos
+
+## Funcionalidades
+
+### API REST de Gerenciamento de Pedidos
+
+- ✅ **Criação de Pedidos**: Registre novos pedidos com produtos e valores
+- ✅ **Consulta de Pedidos**: Busque pedidos individuais ou liste todos os pedidos ativos
+- ✅ **Rastreamento de Status**: Acompanhe o status do pedido em tempo real
+- ✅ **Atualização de Status**: Atualize o status do pedido através do ciclo de vida
+- ✅ **Enriquecimento de Dados**: Integração com serviços de clientes e produtos
+- ✅ **Degradação Graciosa**: Continua operando mesmo se serviços externos falharem
+- ✅ **API RESTful**: Interface padronizada seguindo boas práticas REST
+- ✅ **Documentação Swagger**: API totalmente documentada com OpenAPI 3.0
+
+### Infraestrutura e DevOps
+
+- ✅ **PostgreSQL 15**: Banco de dados relacional robusto
+- ✅ **Docker & Docker Compose**: Containerização completa da aplicação
+- ✅ **Kubernetes Ready**: Manifestos K8s para orquestração em clusters
+- ✅ **Horizontal Pod Autoscaler**: Auto-scaling baseado em CPU e memória
+- ✅ **Health Checks**: Endpoints de monitoramento de saúde da aplicação
+
+### Qualidade e Arquitetura
+
+- ✅ **Clean Architecture**: Separação clara de responsabilidades e camadas
+- ✅ **Dependency Injection**: Gerenciamento com Uber FX
+- ✅ **Testes Unitários**: 85 testes com cobertura ≥ 80%
+- ✅ **BDD Pattern**: Testes com padrão Given/When/Then
+- ✅ **SonarCloud**: Análise contínua de qualidade de código
+- ✅ **Mocks Automatizados**: Geração de mocks para testes isolados
+
+### Banco de Dados
+
+- **Tabelas**: `order`, `order_product`, `order_status`
+- **Isolamento**: Sem chaves estrangeiras para serviços externos
+- **Histórico**: Status do pedido mantém histórico completo
+- **Migrations**: Criação automática de schema
+
+## Tecnologias
+
+- **Go 1.24.2+** - Linguagem de programação principal
+- **PostgreSQL 15** - Banco de dados relacional
+- **GORM v1.26.1** - ORM para Go
+- **Chi Router v5.2.1** - Router HTTP leve e performático
+- **Uber FX v1.23.0** - Framework de injeção de dependências
+- **Testify v1.11.1** - Framework de testes
+- **Mockery v2.53.5** - Geração de mocks
+- **Swagger/OpenAPI** - Documentação da API
+- **Docker & Docker Compose** - Containerização
+- **Kubernetes** - Orquestração de containers
+
+## Estrutura do Projeto
+
+O projeto segue os princípios da **Clean Architecture**, organizando o código em camadas bem definidas:
 
 ```
-├── Camada de Domínio (Lógica de Negócio)
-│   ├── Entidades: OrderEntity, OrderProductEntity, OrderStatusEntity
-│   └── Interfaces de Repositórios
-│
-├── Camada de Casos de Uso (Lógica de Aplicação)
-│   ├── AddOrder: Criar pedidos com validação
-│   ├── GetOrder: Buscar pedido com dados enriquecidos
-│   ├── GetOrders: Listar pedidos ativos
-│   ├── GetOrderStatus: Obter status atual do pedido
-│   └── UpdateOrderStatus: Atualizar status do pedido
-│
-├── Camada de Controlador (Orquestração de Fluxo)
-│   └── OrderController: Coordena DTOs e casos de uso
-│
-├── Camada de Infraestrutura
-│   ├── Persistência: Repositórios PostgreSQL (GORM)
-│   ├── API: Handlers HTTP (Chi router)
-│   ├── Clients: Clientes HTTP para serviços externos
-│   └── DTOs: Objetos de Requisição/Resposta
-│
-└── Camada de Apresentação (Formatação de Dados)
-    └── OrderPresenter: Converte entidades para DTOs
+cmd/api/                                # Entrada da aplicação (main.go)
+internal/
+  app/                                  # Inicialização e injeção de dependências
+  infrastructure/
+    clients/                            # Clientes HTTP para serviços externos
+      customer_client.go                # Cliente do serviço de clientes
+      product_client.go                 # Cliente do serviço de produtos
+  order/                                # Domínio de Pedidos
+    controller/                         # Controllers (orquestração)
+      order_controller.go
+      order_controller_impl.go
+      order_controller_test.go
+    domain/
+      entities/                         # Entidades do domínio
+        order.go
+        order_product.go
+        order_status.go
+      repositories/                     # Interfaces dos repositórios
+        order_repository.go
+        order_product_repository.go
+        order_status_repository.go
+    infrastructure/
+      api/                              # HTTP/REST API
+        controller/
+          order_api_controller.go       # Handlers HTTP
+        dto/                            # Data Transfer Objects
+          add_order_dto.go
+          get_order_response_dto.go
+          get_orders_response_dto.go
+          get_orderstatus_response_dto.go
+          update_order_status_request_dto.go
+      persistence/                      # Data persistence
+        order_repository_impl.go
+        order_repository_impl_test.go
+        order_product_repository_impl.go
+        order_product_repository_impl_test.go
+        order_status_repository_impl.go
+        order_status_repository_impl_test.go
+    presenter/                          # Presentation layer
+      order_presenter.go
+      order_presenter_impl.go
+      order_presenter_test.go
+    usecase/                            # Business logic use cases
+      addOrder/
+        add_order_use_case.go
+        add_order_use_case_impl.go
+        add_order_use_case_test.go
+      getOrder/
+        get_order_use_case.go
+        get_order_use_case_impl.go
+        get_order_use_case_test.go
+      getOrders/
+        get_orders_use_case.go
+        get_orders_use_case_impl.go
+        get_orders_use_case_test.go
+      getOrderStatus/
+        get_order_status_use_case.go
+        get_orders_status_use_case_impl.go
+        get_order_status_use_case_test.go
+      updateOrderStatus/
+        update_order_status_use_case.go
+        update_order_status_use_case._impl.go
+        update_order_status_use_case_test.go
+      commands/                         # Command pattern objects
+        add_order_command.go
+        get_order_command.go
+        get_orders_command.go
+        get_order_status_command.go
+        update_order_status_command.go
+  shared/                               # Shared utilities
+    config/                             # Configuration management
+    httpclient/                         # HTTP client with retry logic
+pkg/                                    # Public shared packages
+  rest/                                 # REST utilities
+  storage/postgres/                     # PostgreSQL connection
+mocks/                                  # Auto-generated mocks
+  order/
+    controller/
+    domain/repositories/
+    presenter/
+    usecase/
+  infrastructure/clients/
+  shared/httpclient/
+docs/                                   # Swagger documentation (generated)
+http/                                   # HTTP test files (REST Client)
+k8s/                                    # Kubernetes manifests
+scripts/                                # Utility scripts
+  coverage.sh
+  coverage.ps1
+.github/workflows/                      # CI/CD pipelines
+go.mod                                  # Go module dependencies
+go.sum                                  # Dependency checksums
+Makefile                                # Build automation
+.mockery.yaml                           # Mock generation config
+docker-compose.yml                      # Local development setup
+Dockerfile                              # Container image
+README.md                               # Project documentation
 ```
 
-### Características do Microsserviço
-
-- **Banco de Dados Isolado**: Banco de dados PostgreSQL dedicado (sem tabelas compartilhadas)
-- **Sem Chaves Estrangeiras**: Referências aos serviços de cliente/produto apenas via IDs
-- **Comunicação HTTP Síncrona**: Chamadas RESTful para serviços externos
-- **Degradação Graciosa**: Continua operando se serviços externos estiverem indisponíveis
-- **Clean Architecture**: Mantém separação de responsabilidades e testabilidade
-
-## Stack Tecnológica
-
-- **Linguagem**: Go 1.24.2+
-- **Roteador HTTP**: Chi v5.2.1
-- **ORM**: GORM v1.26.1
-- **Banco de Dados**: PostgreSQL 15
-- **Injeção de Dependência**: Uber FX v1.23.0
-- **Testes**: Testify + Godog (BDD)
-- **Documentação da API**: Swagger/OpenAPI
-
-## Começando
-
-### Pré-requisitos
-
-- Go 1.24.2 ou superior
-- PostgreSQL 15
-- Docker e Docker Compose (opcional)
-- Make (opcional, para comandos de conveniência)
+## Configuração
 
 ### Variáveis de Ambiente
 
@@ -110,7 +236,7 @@ make build
 make test
 
 # Gerar cobertura de testes
-make test-coverage
+make coverage
 
 # Gerar mocks
 make mocks
@@ -156,232 +282,226 @@ kubectl get pods -l app=order-service
 kubectl get svc order-service
 ```
 
-## Endpoints da API
+## Uso
 
-### Pedidos
+### Endpoints da API
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/v1/order` | Criar um novo pedido |
-| GET | `/v1/order/{orderId}` | Obter pedido por ID |
-| GET | `/v1/order` | Listar todos os pedidos ativos |
-| GET | `/v1/order/{orderId}/status` | Obter status do pedido |
-| PUT | `/v1/order/{orderId}/status` | Atualizar status do pedido |
+#### 1. Criar Pedido
+```bash
+POST /v1/order
+Content-Type: application/json
 
-### Documentação da API
+{
+  "customerId": 1,
+  "totalAmount": 150.00,
+  "products": [
+    {
+      "productId": 10,
+      "quantity": 2,
+      "price": 50.00
+    },
+    {
+      "productId": 20,
+      "quantity": 1,
+      "price": 50.00
+    }
+  ]
+}
+```
 
-Swagger UI disponível em: `http://localhost:8080/swagger/`
+**Resposta (201 Created):**
+```json
+{
+  "id": 123,
+  "created_at": "2026-01-07T23:00:00Z",
+  "total_amount": 150.00,
+  "customer_id": 1,
+  "customer": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@example.com",
+    "cpf": 12345678901
+  },
+  "products": [
+    {
+      "product_id": 10,
+      "price": 50.00,
+      "quantity": 2,
+      "name": "Hambúrguer",
+      "description": "Hambúrguer artesanal",
+      "category": 1
+    }
+  ],
+  "status": [
+    {
+      "id": 1,
+      "current_status": 1,
+      "current_status_description": "Recebido",
+      "order_id": 123
+    }
+  ]
+}
+```
 
-## Ciclo de Vida do Status do Pedido
+#### 2. Buscar Pedido por ID
+```bash
+GET /v1/order/123
+```
+
+**Resposta (200 OK):** (mesmo formato do POST)
+
+#### 3. Listar Pedidos Ativos
+```bash
+GET /v1/order
+```
+
+**Resposta (200 OK):**
+```json
+{
+  "orders": [
+    {
+      "id": 123,
+      "created_at": "2026-01-07T23:00:00Z",
+      "total_amount": 150.00,
+      "customer_id": 1,
+      "products": [...],
+      "status": [...]
+    }
+  ]
+}
+```
+
+#### 4. Buscar Status do Pedido
+```bash
+GET /v1/order/123/status
+```
+
+**Resposta (200 OK):**
+```json
+{
+  "id": 1,
+  "created_at": "2026-01-07T23:00:00Z",
+  "current_status": 2,
+  "current_status_description": "Em preparação",
+  "order_id": 123
+}
+```
+
+#### 5. Atualizar Status do Pedido
+```bash
+PUT /v1/order/123/status
+Content-Type: application/json
+
+{
+  "status": 3
+}
+```
+
+**Resposta (200 OK)**
+
+### Ciclo de Vida do Status do Pedido
 
 1. **Recebido (1)** - Pedido recebido
 2. **Em preparação (2)** - Sendo preparado
-3. **Pronto (3)** - Pronto
-4. **Finalizado (4)** - Concluído
+3. **Pronto (3)** - Pronto para retirada
+4. **Finalizado (4)** - Pedido concluído
 
-## Integração com Serviços Externos
+### Documentação Swagger
 
-### Serviço de Clientes
+Swagger UI disponível em: `http://localhost:8080/swagger/`
 
-- **URL Base**: Configurada via `CUSTOMER_SERVICE_URL`
-- **Usado para**: Validação de clientes e enriquecimento de dados
-- **Endpoints**:
-  - `GET /v1/customer/{id}` - Buscar detalhes do cliente
+## Arquivos HTTP
 
-### Serviço de Produtos
+No diretório [`http/`](http/) estão arquivos `.http` com exemplos prontos para testar a API usando a extensão [REST Client para VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
 
-- **URL Base**: Configurada via `PRODUCT_SERVICE_URL`
-- **Usado para**: Validação de produtos e enriquecimento de dados
-- **Endpoints**:
-  - `GET /v1/product/{id}` - Buscar detalhes do produto
-  - Busca em lote implementada na camada de cliente
+**Como usar:**
+1. Abra o arquivo `.http` no VS Code
+2. Ajuste a variável `baseUrl` se necessário (ex: `@baseUrl = http://localhost:8080/`)
+3. Clique em "Send Request" para executar e ver a resposta
 
-## Schema do Banco de Dados
+Os exemplos cobrem todos os endpoints da API de pedidos.
 
-### Tabela Order
-```sql
-CREATE TABLE "order" (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_amount FLOAT DEFAULT 0,
-    customer_id INTEGER NOT NULL  -- Sem constraint FK
-);
-CREATE INDEX idx_order_customer_id ON "order"(customer_id);
-```
+## Testes com BDD
 
-### Tabela Order Product
-```sql
-CREATE TABLE order_product (
-    id SERIAL PRIMARY KEY,
-    order_id INTEGER NOT NULL REFERENCES "order"(id) ON DELETE CASCADE,
-    product_id INTEGER NOT NULL,  -- Sem constraint FK
-    price FLOAT NOT NULL,
-    quantity INTEGER NOT NULL
-);
-CREATE INDEX idx_order_product_order_id ON order_product(order_id);
-CREATE INDEX idx_order_product_product_id ON order_product(product_id);
-```
+Este projeto implementa **Behavior-Driven Development (BDD)** usando [testify/suite](https://pkg.go.dev/github.com/stretchr/testify/suite).
 
-### Tabela Order Status
-```sql
-CREATE TABLE order_status (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    current_status INTEGER NOT NULL,
-    order_id INTEGER NOT NULL REFERENCES "order"(id) ON DELETE CASCADE
-);
-CREATE INDEX idx_order_status_order_id ON order_status(order_id);
-```
+- **107 testes** em 9 camadas (clients, repository, use case, controller, presenter)
+- Padrão **Given/When/Then** para clareza e legibilidade
+- Mocks gerados automaticamente com Mockery
+- Testes descritivos que funcionam como documentação
 
-## Testes
-
-### Estrutura de Testes
-
-```
-tests/
-├── features/           # Arquivos de feature Gherkin BDD
-│   ├── add_order.feature
-│   ├── get_order.feature
-│   └── ...
-├── steps/              # Definições de steps BDD
-│   └── order_steps.go
-├── mocks/              # Mocks gerados (mockery)
-│   ├── OrderRepository.go
-│   ├── CustomerClient.go
-│   └── ProductClient.go
-└── unit/               # Testes unitários
-    ├── controller/
-    ├── presenter/
-    └── clients/
-```
-
-### Executando Testes
+### Executar Testes
 
 ```bash
 # Executar todos os testes
 make test
 
-# Executar apenas testes unitários
-make test-unit
+# Executar com cobertura
+make coverage
 
-# Executar apenas testes BDD
-make test-bdd
-
-# Gerar relatório de cobertura
-make test-coverage
+# Gerar relatório HTML de cobertura
+make coverage-report
 ```
 
-### Meta de Cobertura de Testes
+### Exemplo de Teste BDD
 
-Meta: **80%** de cobertura em todas as camadas
+```go
+// Feature: Order Repository - Add Order
+// Scenario: Create a new order successfully
 
-## Tratamento de Erros
+func (suite *OrderRepositoryTestSuite) Test_AddOrder_WithValidData_ShouldCreateSuccessfully() {
+    // GIVEN a valid order entity
+    order := &entities.OrderEntity{
+        CustomerId:  1,
+        TotalAmount: 100.50,
+    }
 
-### Degradação Graciosa
+    // WHEN the order is added to the repository
+    result, err := suite.repository.AddOrder(order)
 
-O serviço implementa degradação graciosa para falhas de serviços externos:
-
-- **Serviço de Clientes Fora**: Pedidos são retornados sem dados do cliente
-- **Serviço de Produtos Fora**: Pedidos são retornados apenas com IDs de produtos (sem dados enriquecidos)
-- **Falhas de Validação**: Pedidos não podem ser criados se os serviços estiverem indisponíveis durante a criação
-
-### Lógica de Retry
-
-Clientes HTTP implementam retry com backoff exponencial:
-- **Tentativas Padrão**: 3 tentativas
-- **Backoff**: 100ms base (exponencial)
-- **Timeout**: 30 segundos por requisição
-
-## Desenvolvimento
-
-### Estrutura do Projeto
-
-```
-.
-├── cmd/api/                    # Ponto de entrada da aplicação
-├── internal/
-│   ├── domain/                 # Entidades de negócio e interfaces
-│   ├── usecase/                # Lógica de aplicação
-│   ├── controller/             # Orquestração de fluxo
-│   ├── infrastructure/         # Integrações externas
-│   │   ├── api/                # Handlers HTTP
-│   │   ├── clients/            # Clientes de serviços externos
-│   │   └── persistence/        # Repositórios de banco de dados
-│   ├── presenter/              # Formatação de dados
-│   └── shared/                 # Utilitários compartilhados
-│       ├── config/             # Gerenciamento de configuração
-│       └── httpclient/         # Wrapper de cliente HTTP
-├── pkg/
-│   ├── rest/                   # Utilitários REST
-│   └── storage/postgres/       # Conexão com banco de dados
-├── tests/                      # Arquivos de teste
-├── k8s/                        # Manifests Kubernetes
-├── Dockerfile                  # Configuração Docker
-├── docker-compose.yml          # Configuração Docker Compose
-└── docs/                       # Documentação da API
+    // THEN the operation should complete without errors
+    assert.NoError(suite.T(), err)
+    // AND the order should have an ID assigned
+    assert.NotZero(suite.T(), result.ID)
+}
 ```
 
-### Adicionando Novas Funcionalidades
+## Qualidade de Código
 
-1. **Adicionar Entidade de Domínio/Interface de Repositório** (se necessário)
-2. **Implementar Caso de Uso** com lógica de negócio
-3. **Criar Método no Controlador** para orquestração
-4. **Adicionar Handler da API** na camada de infraestrutura
-5. **Atualizar Presenter** para formatação de resposta
-6. **Escrever Testes** (BDD + Unitários)
-7. **Atualizar Documentação Swagger**
+Este projeto utiliza **SonarCloud** para análise contínua de qualidade de código, segurança e cobertura de testes.
 
-### Geração de Código
+### Métricas Monitoradas
 
+| Métrica | Status | Objetivo |
+|---------|--------|----------|
+| **Quality Gate** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | ✅ Passed |
+| **Coverage** | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | ≥ 80% |
+| **Bugs** | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | 0 |
+| **Code Smells** | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | < 10 |
+| **Security** | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | A |
+
+### Análise Automática
+
+A análise de código é executada automaticamente via **GitHub Actions** em:
+- ✅ Cada push para branches `main` e `develop`
+- ✅ Todos os Pull Requests
+
+### Gerar Coverage Localmente
+
+**Windows (PowerShell):**
+```powershell
+.\scripts\coverage.ps1
+```
+
+**Linux/Mac (Bash):**
 ```bash
-# Gerar mocks
-make mocks
-
-# Gerar documentação Swagger (se necessário)
-swag init -g cmd/api/main.go
+chmod +x scripts/coverage.sh
+./scripts/coverage.sh
 ```
 
-## Monitoramento e Health Checks
-
-### Liveness Probe
-- **Endpoint**: `GET /swagger/doc.json`
-- **Delay Inicial**: 30s
-- **Período**: 10s
-
-### Readiness Probe
-- **Endpoint**: `GET /swagger/doc.json`
-- **Delay Inicial**: 10s
-- **Período**: 5s
-
-## Performance
-
-### Limites de Recursos (Kubernetes)
-
-- **Requests**: 100m CPU, 128Mi Memória
-- **Limits**: 200m CPU, 256Mi Memória
-
-### Auto-scaling (HPA)
-
-- **Réplicas Mínimas**: 2
-- **Réplicas Máximas**: 10
-- **CPU Alvo**: 70%
-- **Memória Alvo**: 80%
-
-## Migração do Monolito
-
-### Principais Mudanças
-
-1. **Removidas Chaves Estrangeiras**: Pedidos não possuem mais constraints FK para tabelas de cliente/produto
-2. **Adicionados Clientes HTTP**: Dados de cliente e produto buscados via HTTP
-3. **Banco de Dados Isolado**: Banco de dados PostgreSQL separado para o serviço de pedidos
-4. **Presenters Atualizados**: Lógica de enriquecimento movida do preload GORM para chamadas HTTP
-5. **Gerenciamento de Configuração**: Configuração centralizada com variáveis de ambiente
-
-### Breaking Changes
-
-- Entidade Customer não está mais embutida em OrderEntity
-- Entidade Product não está mais embutida em OrderProductEntity
-- Respostas podem ter dados de cliente/produto nulos se serviços externos falharem
+Isso gera:
+- `coverage.out` - Formato para SonarCloud
+- `coverage.html` - Visualização no browser
 
 ## Troubleshooting
 
@@ -413,18 +533,57 @@ go mod tidy
 go build ./...
 ```
 
-## Contribuindo
+## Integração com Serviços Externos
 
-1. Siga os princípios da Clean Architecture
-2. Escreva testes para novas funcionalidades (BDD + Unitários)
-3. Mantenha cobertura de testes acima de 80%
-4. Atualize a documentação Swagger
-5. Use commits convencionais
+### Serviço de Clientes
 
-## Licença
+- **URL Base**: Configurada via `CUSTOMER_SERVICE_URL`
+- **Usado para**: Validação de clientes e enriquecimento de dados
+- **Endpoints**:
+  - `GET /v1/customer/{id}` - Buscar detalhes do cliente
+- **Degradação Graciosa**: Se falhar, retorna pedido sem dados do cliente
 
-[Sua Licença Aqui]
+### Serviço de Produtos
 
-## Suporte
+- **URL Base**: Configurada via `PRODUCT_SERVICE_URL`
+- **Usado para**: Validação de produtos e enriquecimento de dados
+- **Endpoints**:
+  - `GET /v1/product/{id}` - Buscar detalhes do produto
+- **Degradação Graciosa**: Se falhar, retorna pedido sem dados enriquecidos do produto
 
-Para problemas e dúvidas, consulte o rastreador de issues.
+### Lógica de Retry
+
+Clientes HTTP implementam retry com backoff exponencial:
+- **Tentativas Padrão**: 3 tentativas
+- **Backoff**: 100ms base (exponencial)
+- **Timeout**: 30 segundos por requisição
+
+## Performance
+
+### Limites de Recursos (Kubernetes)
+
+- **Requests**: 100m CPU, 128Mi Memória
+- **Limits**: 200m CPU, 256Mi Memória
+
+### Auto-scaling (HPA)
+
+- **Réplicas Mínimas**: 2
+- **Réplicas Máximas**: 10
+- **CPU Alvo**: 70%
+- **Memória Alvo**: 80%
+
+## Migração do Monolito
+
+### Principais Mudanças
+
+1. **Removidas Chaves Estrangeiras**: Pedidos não possuem mais constraints FK para tabelas de cliente/produto
+2. **Adicionados Clientes HTTP**: Dados de cliente e produto buscados via HTTP
+3. **Banco de Dados Isolado**: Banco de dados PostgreSQL separado para o serviço de pedidos
+4. **Presenters Atualizados**: Lógica de enriquecimento movida do preload GORM para chamadas HTTP
+5. **Gerenciamento de Configuração**: Configuração centralizada com variáveis de ambiente
+
+### Breaking Changes
+
+- Entidade Customer não está mais embutida em OrderEntity
+- Entidade Product não está mais embutida em OrderProductEntity
+- Respostas podem ter dados de cliente/produto nulos se serviços externos falharem

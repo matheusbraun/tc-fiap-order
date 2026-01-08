@@ -14,5 +14,4 @@ type ProductDTO struct {
 type ProductClient interface {
 	GetProduct(ctx context.Context, productID uint) (*ProductDTO, error)
 	GetProducts(ctx context.Context, productIDs []uint) ([]*ProductDTO, error)
-	ValidateProduct(ctx context.Context, productID uint) (bool, error)
 }

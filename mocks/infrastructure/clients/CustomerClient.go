@@ -82,63 +82,6 @@ func (_c *MockCustomerClient_GetCustomer_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// ValidateCustomer provides a mock function with given fields: ctx, customerID
-func (_m *MockCustomerClient) ValidateCustomer(ctx context.Context, customerID uint) (bool, error) {
-	ret := _m.Called(ctx, customerID)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ValidateCustomer")
-	}
-
-	var r0 bool
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint) (bool, error)); ok {
-		return rf(ctx, customerID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, uint) bool); ok {
-		r0 = rf(ctx, customerID)
-	} else {
-		r0 = ret.Get(0).(bool)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
-		r1 = rf(ctx, customerID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockCustomerClient_ValidateCustomer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ValidateCustomer'
-type MockCustomerClient_ValidateCustomer_Call struct {
-	*mock.Call
-}
-
-// ValidateCustomer is a helper method to define mock.On call
-//   - ctx context.Context
-//   - customerID uint
-func (_e *MockCustomerClient_Expecter) ValidateCustomer(ctx interface{}, customerID interface{}) *MockCustomerClient_ValidateCustomer_Call {
-	return &MockCustomerClient_ValidateCustomer_Call{Call: _e.mock.On("ValidateCustomer", ctx, customerID)}
-}
-
-func (_c *MockCustomerClient_ValidateCustomer_Call) Run(run func(ctx context.Context, customerID uint)) *MockCustomerClient_ValidateCustomer_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
-	})
-	return _c
-}
-
-func (_c *MockCustomerClient_ValidateCustomer_Call) Return(_a0 bool, _a1 error) *MockCustomerClient_ValidateCustomer_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockCustomerClient_ValidateCustomer_Call) RunAndReturn(run func(context.Context, uint) (bool, error)) *MockCustomerClient_ValidateCustomer_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // NewMockCustomerClient creates a new instance of MockCustomerClient. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockCustomerClient(t interface {

@@ -3,7 +3,6 @@ package clients
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/viniciuscluna/tc-fiap-50/internal/shared/httpclient"
 )
@@ -47,17 +46,4 @@ func (c *productClientImpl) GetProducts(ctx context.Context, productIDs []uint) 
 	}
 
 	return products, nil
-}
-
-func (c *productClientImpl) ValidateProduct(ctx context.Context, productID uint) (bool, error) {
-	product, err := c.GetProduct(ctx, productID)
-	if err != nil {
-		// Check if it's a 404 error
-		if strings.Contains(err.Error(), "404") {
-			return false, nil
-		}
-		return false, err
-	}
-
-	return product != nil && product.ID == productID, nil
 }

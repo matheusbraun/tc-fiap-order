@@ -29,7 +29,6 @@ func (r *OrderRepositoryImpl) GetOrder(orderId uint) (*entities.OrderEntity, err
 	order := &entities.OrderEntity{}
 	if err := r.db.
 		Preload("Products").
-		Preload("Products.Product").
 		Preload("Status", func(db *gorm.DB) *gorm.DB {
 			return db.Order("created_at DESC")
 		}).
@@ -44,7 +43,6 @@ func (r *OrderRepositoryImpl) GetOrders() ([]*entities.OrderEntity, error) {
 	var orders []*entities.OrderEntity
 	if err := r.db.
 		Preload("Products").
-		Preload("Products.Product").
 		Preload("Status", func(db *gorm.DB) *gorm.DB {
 			return db.Order("current_status DESC")
 		}).
