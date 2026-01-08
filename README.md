@@ -1,11 +1,11 @@
 # Tech Challenge - Order Microservice
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order)
 
 Um microsserviço standalone para gerenciamento de pedidos seguindo os princípios de Clean Architecture, extraído de uma aplicação monolítica.
 
@@ -474,11 +474,11 @@ Este projeto utiliza **SonarCloud** para análise contínua de qualidade de cód
 
 | Métrica | Status | Objetivo |
 |---------|--------|----------|
-| **Quality Gate** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | ✅ Passed |
-| **Coverage** | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | ≥ 80% |
-| **Bugs** | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | 0 |
-| **Code Smells** | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | < 10 |
-| **Security** | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=viniciuscluna_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=viniciuscluna_tc-fiap-order) | A |
+| **Quality Gate** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order) | ✅ Passed |
+| **Coverage** | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=coverage)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order) | ≥ 80% |
+| **Bugs** | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=bugs)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order) | 0 |
+| **Code Smells** | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order) | < 10 |
+| **Security** | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=matheusbraun_tc-fiap-order&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=matheusbraun_tc-fiap-order) | A |
 
 ### Análise Automática
 
