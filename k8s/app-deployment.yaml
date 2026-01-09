@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: order-app-container
-          image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:main
+          image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -39,7 +39,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_DB
+                  key: DB_NAME_ORDER
             - name: CUSTOMER_SERVICE_URL
               value: "http://a99c522669cb348c2b0bfdf2e2c7b7be-57fcd899a3f33e0b.elb.us-east-1.amazonaws.com/customer"
             - name: PRODUCT_SERVICE_URL
