@@ -166,5 +166,5 @@ jobs:
           kubectl apply -f k8s/app-hpa.yaml
 
           echo "Deployment completed. Checking status..."
-          kubectl get deployment order-deployment -o wide
-          kubectl rollout status deployment/order-deployment --timeout=300s
+          kubectl get deployment order-app-deployment -o wide
+          kubectl rollout status deployment/order-app-deployment --timeout=300s
