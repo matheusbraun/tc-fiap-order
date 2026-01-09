@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: order-app-container
-          image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:latest
+          image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:main
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
