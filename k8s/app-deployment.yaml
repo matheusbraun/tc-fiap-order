@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-deployment
+  name: order-app-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-app
+      app: order-app
   template:
     metadata:
       labels:
-        app: my-app
+        app: order-app
     spec:
       containers:
-        - name: my-app-container
+        - name: order-app-container
           image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:latest
           imagePullPolicy: Always
           ports:
