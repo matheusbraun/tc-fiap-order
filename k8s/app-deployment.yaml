@@ -20,7 +20,7 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "tc-fiap-product-production-postgres.ctowsmqftce2.us-east-1.rds.amazonaws.com"
+              value: "tc-fiap-order-production-postgres.ctowsmqftce2.us-east-1.rds.amazonaws.com"
             - name: DB_PORT
               value: "5432"
             - name: DB_SSLMODE
