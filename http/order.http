@@ -1,6 +1,6 @@
 ### Add order
 # @name AddOrder
-POST http://localhost:8080/v1/order
+POST http://a99c522669cb348c2b0bfdf2e2c7b7be-57fcd899a3f33e0b.elb.us-east-1.amazonaws.com/order/v1/order
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
 
 ### Get order status
 # @name GetOrderStatus
-GET http://localhost:8080/v1/order/3/status
+GET http://localhost:8080/v1/order/8/status
 
 ### Update order status
 # @name UpdateOrderStatus
