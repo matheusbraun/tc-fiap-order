@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
         - name: my-app-container
-          image: 975049982271.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-50:latest
+          image: 939458930010.dkr.ecr.us-east-1.amazonaws.com/tc-fiap-order:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "tc-fiap-staging-postgres.c90ys0mko7jv.us-east-1.rds.amazonaws.com"
+              value: "tc-fiap-product-production-postgres.ctowsmqftce2.us-east-1.rds.amazonaws.com"
             - name: DB_PORT
               value: "5432"
             - name: DB_SSLMODE
@@ -40,35 +40,7 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
-            
-            # Variáveis do Mercado Pago
-            - name: MERCADO_PAGO_BASEURL
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_BASEURL
-            - name: MERCADO_PAGO_ACCESS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_ACCESS_TOKEN
-            - name: MERCADO_PAGO_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_CLIENT_ID
-            - name: MERCADO_PAGO_POS_ID
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_POS_ID
-            - name: MERCADO_PAGO_WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_WEBHOOK_SECRET
-            - name: MERCADO_PAGO_WEBHOOK_CALLBACK_URL
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: MERCADO_PAGO_WEBHOOK_CALLBACK_URL
+            - name: CUSTOMER_SERVICE_URL
+              value: "http://a99c522669cb348c2b0bfdf2e2c7b7be-57fcd899a3f33e0b.elb.us-east-1.amazonaws.com/customer"
+            - name: PRODUCT_SERVICE_URL
+              value: "http://a99c522669cb348c2b0bfdf2e2c7b7be-57fcd899a3f33e0b.elb.us-east-1.amazonaws.com/product"

@@ -26,7 +26,7 @@ env:
   GO_VERSION: "1.24.3"
   KUBECTL_VERSION: "v1.33.0"
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: tc-fiap
+  EKS_CLUSTER_NAME: tc-fiap-production
   ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
   ECR_REPOSITORY: tc-fiap-order
 

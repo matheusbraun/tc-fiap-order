@@ -29,8 +29,6 @@ O pipeline irá **falhar** se algum secret estiver faltando:
 - `DB_NAME`
 - `DB_USER`
 - `DB_PASSWORD`
-- `MERCADO_PAGO_ACCESS_TOKEN`
-- `MERCADO_PAGO_WEBHOOK_SECRET`
 
 ### Manual
 ```bash
